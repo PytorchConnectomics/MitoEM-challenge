@@ -22,34 +22,27 @@ from PIL import ImageEnhance, Image
 from os import path
 
 img_shape = (4096, 4096)
-img_out_shape = (2048, 2048)
 pred_dir = 'binarized_50ov'
 pred_ids = sorted(next(os.walk(pred_dir))[2])  
 h5file_name = '0_human_instance_seg_pred.h5'
 
 # Allocate memory for the predictions
-pred_stack = np.zeros((len(pred_ids),) + img_out_shape, dtype=np.int64)
+pred_stack = np.zeros((len(pred_ids),) + img_shape, dtype=np.int64)
 
-# Read all the predictions
-print("Creating {}".format(h5file_name))                                        
+# Read all the images
 for n, id_ in tqdm(enumerate(pred_ids)):
     img = imread(os.path.join(pred_dir, id_))
-
-    # Resize the image 
-    img = img.astype('uint8')
-    img = Image.fromarray(img)
-    img = img.resize((2048,2048))                                           
-    img = np.array(img)
-
     pred_stack[n] = img
+
+# Downsample by 2
+pred_stack = pred_stack[:,::2,::2] 
 
 # Apply connected components to make instance segmentation
 pred_stack = (pred_stack / 255).astype('int64')
 pred_stack, nr_objects = ndimage.label(pred_stack)
-print("Number of objects is {}".format(nr_objects))
+print("Number of objects {}".format(nr_objects))
 
 # Create the h5 file (using lzf compression to save space)
 h5f = h5py.File(h5file_name, 'w')
 h5f.create_dataset('dataset_1', data=pred_stack, compression="lzf")
 h5f.close()
-
