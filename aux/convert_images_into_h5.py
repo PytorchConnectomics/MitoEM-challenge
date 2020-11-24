@@ -28,7 +28,7 @@ pred_ids = sorted(next(os.walk(pred_dir))[2])
 h5file_name = '0_human_instance_seg_pred.h5'
 
 # Allocate memory for the predictions
-pred_stack = np.zeros(img_out_shape + (len(pred_ids),), dtype=np.int64)
+pred_stack = np.zeros((len(pred_ids),) + img_out_shape, dtype=np.int64)
 
 # Read all the predictions
 print("Creating {}".format(h5file_name))                                        
