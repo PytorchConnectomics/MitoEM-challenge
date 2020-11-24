@@ -41,7 +41,7 @@ for n, id_ in tqdm(enumerate(pred_ids)):
     img = img.resize((2048,2048))                                           
     img = np.array(img)
 
-    pred_stack[...,n] = img
+    pred_stack[n] = img
 
 # Apply connected components to make instance segmentation
 pred_stack = (pred_stack / 255).astype('int64')
