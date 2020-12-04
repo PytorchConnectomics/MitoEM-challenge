@@ -35,7 +35,7 @@ for n, id_ in tqdm(enumerate(pred_ids)):
     pred_stack[n] = img
 
 # Downsample by 2
-pred_stack = pred_stack[:,::2,::2] 
+#pred_stack = pred_stack[:,::2,::2] 
 
 # Apply connected components to make instance segmentation
 pred_stack = (pred_stack / 255).astype('int64')
